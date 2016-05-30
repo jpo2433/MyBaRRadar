@@ -1,7 +1,9 @@
 package com.example.jasmin.barradar.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity
     private LocationRequest mLocationRequest;
     private DefaultApi api;
 
+    public static SharedPreferences prefs;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.drawable.barradar);
+
+        prefs = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //to prevent networkonmainthreadexception
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -159,8 +166,13 @@ public class MainActivity extends AppCompatActivity
         //read all locations from database and show pins on map
         List<io.swagger.client.model.Location> locations = new ArrayList<>();
         try {
-            //TODO Radius
-            locations = api.locationsGet(currentLatitude,currentLongitude,1000.0);
+            Double radius = Double.parseDouble(new String("" + prefs.getInt("radius", 1000)));
+            locations = api.locationsGet(currentLatitude,currentLongitude,radius);
+
+            SharedPreferences.Editor editor = MainActivity.prefs.edit();
+            editor.putString("latitude", ""+currentLatitude);
+            editor.putString("longitude", ""+currentLongitude);
+            editor.commit();
         } catch (ApiException e) {
             e.printStackTrace();
         }
@@ -210,6 +222,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 

@@ -62,8 +62,12 @@ public class ListActivity extends AppCompatActivity {
 
         List<Location> locations = new ArrayList<>();
         try {
-            //TODO users position
-            locations = api.locationsGet(10.0,10.0,10.0);
+
+            Double radius = Double.parseDouble(new String("" + MainActivity.prefs.getInt("radius", 1000)));
+            Double lat = Double.parseDouble(MainActivity.prefs.getString("latitude", "0.0"));
+            Double lng = Double.parseDouble(MainActivity.prefs.getString("longitude", "0.0"));
+
+            locations = api.locationsGet(lat,lng,radius);
         } catch (ApiException e) {
             e.printStackTrace();
         }
@@ -94,8 +98,11 @@ public class ListActivity extends AppCompatActivity {
     public void updateLocationListView() {
         List<Location> assignments = null;
         try {
-            //TODO user position and radius
-            assignments = api.locationsGet(10.0,10.0,10.0);
+            Double radius = Double.parseDouble(new String("" + MainActivity.prefs.getInt("radius", 1000)));
+            Double lat = Double.parseDouble(MainActivity.prefs.getString("latitude", "0.0"));
+            Double lng = Double.parseDouble(MainActivity.prefs.getString("longitude", "0.0"));
+
+            assignments = api.locationsGet(lat,lng,radius);
         } catch (ApiException e) {
             e.printStackTrace();
         }
