@@ -64,9 +64,6 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity
             android:name=".activities.AddLocationActivity"
             android:label="@string/title_activity_add_location"
             android:parentActivityName=".activities.ListActivity"

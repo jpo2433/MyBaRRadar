@@ -13,9 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.jasmin.barradar.adapter.ItemAdapter;
-import com.example.jasmin.barradar.database.DataSource;
 import com.example.jasmin.barradar.R;
+import com.example.jasmin.barradar.adapter.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +28,7 @@ public class ListActivity extends AppCompatActivity {
 
     private ListView listView;
     private ItemAdapter adapter;
-//    private DataSource dataSource;
     private DefaultApi api;
-
-    public static final String EXTRA_LOCATION_ID = "extraLocationId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +46,16 @@ public class ListActivity extends AppCompatActivity {
         api = new DefaultApi();
         ApiInvoker.getInstance().ignoreSSLCertificates(true);
 
-//        dataSource = new DataSource(this);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ListActivity.this, AddLocationActivity.class);
-                startActivityForResult(intent, 100);
-            }
-        });
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ListActivity.this, AddLocationActivity.class);
+                    startActivityForResult(intent, 100);
+                }
+            });
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listView = (ListView)findViewById(R.id.list_locations);
@@ -71,28 +67,15 @@ public class ListActivity extends AppCompatActivity {
         } catch (ApiException e) {
             e.printStackTrace();
         }
-
-//        List<Location> locations = dataSource.getAllLocations();
         adapter = new ItemAdapter(this, android.R.layout.simple_list_item_1, locations);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Create an Intent
                 Intent intent = new Intent(ListActivity.this, LocationActivity.class);
                 intent.putExtra("location", adapter.getItem(position));
                 startActivityForResult(intent, 111);
-
-//                Location clickedItem = (Location) parent.getItemAtPosition(position);
-//                intent.putExtra("title", clickedItem.getTitle());
-//                intent.putExtra("description", clickedItem.getDescription());
-//                intent.putExtra("picture-resource", clickedItem.getPictureResource());
-//                intent.putExtra("type", clickedItem.getType());
-//                intent.putExtra("address", clickedItem.getAddress());
-//
-//                //Open the new screen by starting the activity
-//                startActivity(intent);
             }
         });
 
@@ -101,16 +84,6 @@ public class ListActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if(requestCode == 100){
-//            if(resultCode == RESULT_OK) {
-//                long locationId = data.getLongExtra(EXTRA_LOCATION_ID, -1);
-//                if(locationId != -1) {
-//                    Location location = dataSource.getLocation(locationId);
-//                    adapter.add(location);
-//                    updateLocationListView();
-//                }
-//            }
-//        }
         if (requestCode == 2 || requestCode == 111) {
             if (resultCode == RESULT_OK) {
                 updateLocationListView();
@@ -121,11 +94,11 @@ public class ListActivity extends AppCompatActivity {
     public void updateLocationListView() {
         List<Location> assignments = null;
         try {
+            //TODO user position and radius
             assignments = api.locationsGet(10.0,10.0,10.0);
         } catch (ApiException e) {
             e.printStackTrace();
         }
-//        List<Location> assignments = dataSource.getAllLocations();
         adapter = new ItemAdapter(this, android.R.layout.simple_list_item_1, assignments);
         listView.setAdapter(adapter);
     }
@@ -150,7 +123,6 @@ public class ListActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 e.printStackTrace();
             }
-//            dataSource.deleteLocation(assignment);
             updateLocationListView();
         } else if(item.getTitle() == "Edit") {
             Intent intent = new Intent(ListActivity.this, EditLocationActivity.class);
