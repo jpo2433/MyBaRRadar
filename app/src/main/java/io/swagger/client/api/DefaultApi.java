@@ -15,7 +15,7 @@ import io.swagger.client.Pair;
 import io.swagger.client.model.Location;
 
 public class DefaultApi {
-  String basePath = "http://192.168.0.106:8080/barradar/servlet";
+  String basePath = "http://192.168.0.101:8080/barradar/servlet";
   ApiInvoker apiInvoker = ApiInvoker.getInstance();
 
   public void addHeader(String key, String value) {
